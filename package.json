@@ -3,18 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/runtime": ">=7.0.0-beta.56",
+    "@craco/craco": "^6.1.1",
+    "@hot-loader/react-dom": "^17.0.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "axios": "^0.21.1",
+    "cesium": "^1.78.0",
+    "craco-cesium": "^1.2.0",
+    "craco-plugin-react-hot-reload": "^0.1.0",
+    "prop-types": "^15.6.2",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-hot-loader": "^4.13.0",
     "react-scripts": "4.0.2",
+    "react-sidebar": "^3.0.2",
+    "resium": "^1.13.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,5 +45,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:3001"
 }
