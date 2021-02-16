@@ -1,6 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+
+
+// import { Ion } from "cesium";
+
+
+
 // Styling Imports
 // import "index.css"
 
@@ -8,6 +14,8 @@ import ReactDOM from 'react-dom';
 import Application from './components/Application';
 
 // import reportWebVitals from './reportWebVitals';
+
+// Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkYjM3NTU5MC0wMzhjLTQyZGMtOTYxZC0zMWRjZjg4OWU2MTIiLCJpZCI6NDM5MzYsImlhdCI6MTYxMzQyOTc3MH0.ALXQG01nIMlWQgj76_FX1kB_MWdFANa_pg6qj_gfBUk";
 
 ReactDOM.render(<Application />, document.getElementById("root"));
 
