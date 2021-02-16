@@ -3,12 +3,6 @@ import ReactDOM from 'react-dom';
 
 
 
-// import { Ion } from "cesium";
-
-
-
-// Styling Imports
-// import "index.css"
 
 //Component Imports
 import Application from './components/Application';

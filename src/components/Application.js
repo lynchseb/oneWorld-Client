@@ -24,19 +24,52 @@ const styles = {
     padding: 8
   },
   content: {
-    padding: "16px"
+    padding: "0px",
+    margin: "0px"
   }
 };
 
 const terrainProvider = createWorldTerrain();
-const position = Cartesian3.fromDegrees(-74.0707383, 40.7117244, 100);
+
+const getUserPreferences = [
+  {
+    name: "Tokyo",
+    position: Cartesian3.fromDegrees(-74.0707383, 40.7117244, 100),
+    content: "test"
+  },
+  {
+    name: "Toronto",
+    position: Cartesian3.fromDegrees(43.6532, 79.3832, 100),
+    content: "test"
+  },
+  {
+    name: "Bolivia",
+    position: Cartesian3.fromDegrees(-100.0707383, 133.7117244, 100),
+    content: "test"
+  },
+  {
+    name: "Peru",
+    position:  Cartesian3.fromDegrees(145.0707383, 165.7117244, 100),
+    content: "test"
+  },
+  {
+    name: "Bangkok",
+    position: Cartesian3.fromDegrees(23.0707383, 78.7117244, 100),
+    content: "test"
+  }
+]
+  
+  // Cartesian3.fromDegrees(15.0707383, 30.7117244, 100),
+  // Cartesian3.fromDegrees(42.0707383, 55.7117244, 100),
+  // Cartesian3.fromDegrees(77.0707383, -145.7117244, 100)
+
 
 class Application extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      docked: false,
+      docked: true,
       open: false,
       transitions: true,
       shadow: true,
@@ -80,6 +113,18 @@ class Application extends React.Component {
   }
   // Sidebar methods end
 
+ 
+  userPreferences = getUserPreferences.map((entity) => {
+    return ( 
+    <Entity position={entity.position} name={entity.name}>
+      <PointGraphics pixelSize={15} />
+      <EntityDescription>
+        <h1>{entity.content}</h1>
+      </EntityDescription>
+    </Entity> 
+    )
+  })
+
   render() {
     const sidebar = <SidebarContent />;
 
@@ -110,12 +155,7 @@ class Application extends React.Component {
             <MaterialTitlePanel title={contentHeader}>
               <div style={styles.content}>
                 <Viewer terrainProvider={terrainProvider}>
-                  <Entity position={position} name="Tokyo">
-                    <PointGraphics pixelSize={15} />
-                    <EntityDescription>
-                      <h1>HELLO WORLdD</h1>
-                    </EntityDescription>
-                  </Entity>
+                  {this.userPreferences}
                 </Viewer>
               </div>
             </MaterialTitlePanel>
@@ -126,6 +166,8 @@ class Application extends React.Component {
     );
   }
 }
+
+
 
 export default hot(Application)
 
