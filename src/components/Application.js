@@ -3,8 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
 import Sidebar from "react-sidebar";
+
+//Component Imports
 import MaterialTitlePanel from "./MaterialTitlePanel";
 import SidebarContent from "./SidebarContent";
+import Playlist from "./Playlist";
 
 // import MaterialTitlePanel from "./material_title_panel";
 // import SidebarContent from "./sidebar_content";
@@ -150,7 +153,7 @@ class Application extends React.Component {
     };
 
     return (
-      <main>
+      <nav>
           <Sidebar {...sidebarProps}>
             <MaterialTitlePanel title={contentHeader}>
               <div style={styles.content}>
@@ -160,14 +163,27 @@ class Application extends React.Component {
               </div>
             </MaterialTitlePanel>
           </Sidebar>
-      </main>
+      </nav>
       
     
     );
   }
 }
 
-
+{/* <main>
+<nav>
+    <Sidebar {...sidebarProps}>
+      
+    </Sidebar>
+</nav>
+        <MaterialTitlePanel title={contentHeader}>
+        <div style={styles.content}>
+        <Viewer terrainProvider={terrainProvider}>
+                  {this.userPreferences}
+                </Viewer>
+        </div>
+      </MaterialTitlePanel>
+</main> */}
 
 export default hot(Application)
 
