@@ -48,59 +48,106 @@ const getUserPreferences = [
   {
     name: "Toronto",
     position: Cartesian3.fromDegrees(-74.0707383, 40.7117244, 100),
-  
+    description: "North America",
     key: 1
      
   },
   {
     name: "Tokyo",
     position: Cartesian3.fromDegrees(43.6532, 79.3832, 100),
-    
+    description: "Asian",
     key: 2
   }
 ]
 
-
-const termFromSearchBar = "?part=snippet&maxResults=5&key=AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A&q=hockey"
+// search?key={your_key_here}&channelId={channel_id_here}&part=snippet,id&order=date&maxResults=20
+// const termFromSearchBar = "?part=snippet&maxResults=5&key=AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A&q=hockey"
   
-const test = function MyVerticallyCenteredModal(props) {
-  return (
-    <Modal
-   
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Modal heading
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <h4>Centered Modal</h4>
-        <p>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-          dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-          consectetur ac, vestibulum at eros.
-        </p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
-      </Modal.Footer>
-    </Modal>
-  );
-}
+
 
 export default hot(function Application(props) {
-
+  
   const [state, setState] = useState({
     docked: false,
     open: false,
     transitions: true,
     videos: [],
-    selectedVideos: null
+    selectedVideos: null,
+    modalShow: false,
+    videoModalShow: false
 
-  })
+  });
+
+  // Youtube API requests Begin
+  
+  // useEffect(() => {
+  //   handleSubmit()
+  // })
+
+  // Youtube API requests End
+
+  // Playlist and Video Modal methods begin
+
+  function PlaylistModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            oneWorld
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='ui container' style={{marginBottom: '1em'}}>
+            <SearchBar handleFormSubmit={handleSubmit}/>
+            <div className='ui grid'>
+              <div className="ui row">
+                 <div className="five wide column">
+                   <VideoList handleVideoSelect={handleVideoSelect} videos={state.videos}/>
+                  </div>
+                </div>
+            </div>
+          </div>    
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={props.onHide}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
+  function VideoModal(props) {
+    return (
+      <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter">
+        <Modal.Body>
+           <div className="eleven wide column">
+               <VideoDetail video={state.selectedVideo}/>
+            </div>    
+        </Modal.Body>
+      </Modal>
+    );
+  }
+
+
+  const handleModalShow = () =>  {
+    const newState = {...state}
+    newState.modalShow = !state.modalShow
+    setState(prev => ({...prev, ...newState}))
+
+    //Likely need to put in handleSearch here
+  }
+
+  const handleVideoModalShow = () =>  {
+    const newState = {...state}
+    newState.videoModalShow = !state.videoModalShow
+    setState(prev => ({...prev, ...newState}))
+  }
+
+  // Playlist and Video Modal methods end
 
   //Sidebar methods begin
 
@@ -136,46 +183,42 @@ export default hot(function Application(props) {
   }
 
   // Sidebar methods end
-
- 
-
+  // https://youtube.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=Ks-_Mh1QhMc&type=video&key=[YOUR_API_KEY]'
   // Youtube API methods begin
+
   const handleSubmit = async (termFromSearchBar) => {
     const response = await youtube.get('/search', {
         params: {
             q: termFromSearchBar
         }
     })
-    setState(prev => ({...prev,  videos: response.data.items}))
-       
-    
-};
+    setState(prev => ({...prev,  videos: response.data.items})) 
+  };
+
     const handleVideoSelect = (video) => {
+    handleModalShow()
+    handleVideoModalShow()
     setState(prev => ({...prev, selectedVideo: video}))
-}
+  }
 
   // YouTube API methods end
 
   // Entity Builder Begin
- 
+   
   const userPreferences = getUserPreferences.map((entity) => {
     return ( 
-      <Entity key={entity.key} position={entity.position} name={entity.name} description={"Hello World"} point={{ pixelSize: 15, color: Color.BLUE }}>
-        <EntityDescription resizeInfoBox={true}>
-          <div className='ui container' style={{marginTop: '1em'}}>
-            <SearchBar handleFormSubmit={handleSubmit}/>
-            <div className='ui grid'>
-              <div className="ui row">
-                <div className="five wide column">
-                  <VideoList handleVideoSelect={handleVideoSelect} videos={state.videos}/>
-                </div>
-              </div>
-            </div>
-          </div>
-        </EntityDescription>
-      </Entity> 
+      <Entity onClick={() => handleModalShow()} key={entity.key} position={entity.position} name={entity.name} description={entity.description} point={{ pixelSize: 15, color: Color.ORANGE }} >
+        <PlaylistModal
+        show={state.modalShow} 
+        onHide={handleModalShow}
+      />
+      <VideoModal
+        show={state.videoModalShow} 
+        onHide={handleVideoModalShow}
+      />
+      </Entity>
     )
-  })
+  }) 
 
   //Entity Builder end
 
@@ -196,7 +239,7 @@ export default hot(function Application(props) {
     sidebar,
     docked: state.docked,
     sidebarClassName: "custom-sidebar-class",
-    // contentId: "custom-sidebar-content-id",
+    contentId: "custom-sidebar-content-id",
     open: state.open,
     onSetOpen
   };
@@ -208,10 +251,10 @@ export default hot(function Application(props) {
             <Sidebar {...sidebarProps}>
               <MaterialTitlePanel title={contentHeader}>
                 <div style={styles.content}>
-                  <Viewer infobox={true} fullscreenButton={true} terrainProvider={terrainProvider} onClick={(e, entity) => console.log(entity)}>
-                    <CustomDataSource>
+                  <Viewer infobox={true} fullscreenButton={true} terrainProvider={terrainProvider}>
+                    <CustomDataSource >
                     { userPreferences }
-
+           
                     </CustomDataSource>
                   </Viewer>
                 </div>
@@ -219,9 +262,9 @@ export default hot(function Application(props) {
             </Sidebar>
         </nav>
       <footer>
-      <div className="eleven wide column">
+                  {/* <div className="eleven wide column">
                     <VideoDetail video={state.selectedVideo}/>
-                </div> 
+                </div>  */}
       
       </footer>
       </main>
