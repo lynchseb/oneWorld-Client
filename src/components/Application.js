@@ -1,11 +1,11 @@
 
 // Dependency Imports
 import React, { useState, useEffect } from 'react';
-import ReactDOM from "react-dom";
+// import ReactDOM from "react-dom";
 import Sidebar from "react-sidebar";
 
-// Model Test
-import Modal from 'react-bootstrap/Modal'
+// Modal Component Imports
+import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 //Sidebar Component Imports
@@ -22,8 +22,8 @@ import VideoDetail from './VideoDetail';
 import { hot } from "react-hot-loader/root";
 
 // Resium imports
-import { Viewer, Entity, PointGraphics, EntityDescription, CustomDataSource } from "resium";
-import { Cartesian3, createWorldTerrain, Color } from "cesium";
+import { Cesium, Cartesian3, createWorldTerrain, Color, ClockRange, ClockStep, JulianDate } from "cesium";
+import { Viewer, Entity, CustomDataSource, Globe, Clock } from "resium";
 
 // Style imports
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -43,21 +43,55 @@ const styles = {
 
 const terrainProvider = createWorldTerrain();
 
+const converter = (number) => {
+  console.log(number)
+  return (number * 180) / Math.PI
+}
+
 const getUserPreferences = [
 
   {
     name: "Toronto",
-    position: Cartesian3.fromDegrees(-74.0707383, 40.7117244, 100),
+    position: Cartesian3.fromDegrees(-79.347015, 43.651070, 100),
     description: "North America",
     key: 1
      
   },
+
   {
     name: "Tokyo",
-    position: Cartesian3.fromDegrees(43.6532, 79.3832, 100),
+    position: Cartesian3.fromDegrees(139.767052, 35.681167, 100),
     description: "Asia",
     key: 2
-  }
+  },
+  {
+    name: "San Francisco",
+    position: Cartesian3.fromDegrees(-122.4194, 37.7749, 100),
+    description: "North America",
+    key: 3
+     
+  },
+  {
+    name: "Berlin",
+    position: Cartesian3.fromDegrees(13.4050, 52.5200, 100),
+    description: "Europe",
+    key: 4
+     
+  },
+  {
+    name: "Delhi",
+    position: Cartesian3.fromDegrees(77.1025, 28.7041, 100),
+    description: "Asia",
+    key: 5
+     
+  },
+  {
+    name: "Sydney",
+    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
+    description: "Australia",
+    key: 6
+     
+  },
 ]
 
 // search?key={your_key_here}&channelId={channel_id_here}&part=snippet,id&order=date&maxResults=20
@@ -65,7 +99,7 @@ const getUserPreferences = [
   
 
 
-export default hot(function Application(props) {
+export default hot(function Application() {
   
   const [state, setState] = useState({
     docked: false,
@@ -94,11 +128,12 @@ export default hot(function Application(props) {
         {...props}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
-        centered
+        centered={true}
+        backdrop={false}
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            oneWorld
+            oneWorld Engine
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -244,6 +279,8 @@ export default hot(function Application(props) {
     onSetOpen
   };
 
+
+
     return (
       <main>
        
@@ -251,7 +288,20 @@ export default hot(function Application(props) {
             <Sidebar {...sidebarProps}>
               <MaterialTitlePanel title={contentHeader}>
                 <div style={styles.content}>
-                  <Viewer infobox={true} fullscreenButton={true} terrainProvider={terrainProvider}>
+                  <Viewer infobox={true} fullscreenButton={true} terrainProvider={terrainProvider} >
+                    
+                  
+                  <Globe enableLighting />
+                  <Clock
+                      startTime={JulianDate.fromIso8601("2020-02-20")}
+                      currentTime={JulianDate.fromIso8601("2021-02-20")}
+                      stopTime={JulianDate.fromIso8601("2030-01-01")}
+                      clockRange={ClockRange.LOOP_STOP} 
+                      clockStep={ClockStep.SYSTEM_CLOCK_MULTIPLIER}
+                      multiplier={250} 
+                      shouldAnimate 
+                    />
+                  
                     <CustomDataSource >
                     { userPreferences }
            
