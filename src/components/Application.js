@@ -287,7 +287,7 @@ export default hot(function Application() {
         params: {
           part: 'snippet',
           maxResults: 5,
-          key: "AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A",
+          key: "",
           q: termFromSearchBar
         }
     })
@@ -304,7 +304,7 @@ export default hot(function Application() {
           maxResult: 5,
           q,
           type: "video",
-          key: "AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A"
+          key: ""
         }
     })
     setState(prev => ({...prev,  videos: response.data.items})) 

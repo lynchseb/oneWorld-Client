@@ -13,6 +13,6 @@ export default axios.create({
 //   params: {
 //     part: 'snippet',
 //     maxResults: 5,
-//     key: "AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A"
+//     key: ""
 //   }
 // })
