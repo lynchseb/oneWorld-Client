@@ -1,6 +1,6 @@
 
 // Dependency Imports
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 // import ReactDOM from "react-dom";
 import Sidebar from "react-sidebar";
 
@@ -22,7 +22,7 @@ import VideoDetail from './VideoDetail';
 import { hot } from "react-hot-loader/root";
 
 // Resium imports
-import { Cesium, Cartesian3, createWorldTerrain, Color, ClockRange, ClockStep, JulianDate } from "cesium";
+import { Cartesian3, createWorldTerrain, Color, ClockRange, ClockStep, JulianDate } from "cesium";
 import { Viewer, Entity, CustomDataSource, Globe, Clock } from "resium";
 
 // Style imports
@@ -43,10 +43,9 @@ const styles = {
 
 const terrainProvider = createWorldTerrain();
 
-const converter = (number) => {
-  console.log(number)
-  return (number * 180) / Math.PI
-}
+
+
+// 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&location=21.5922529%2C-158.1147114&locationRadius=10mi&q=surfing&type=video&key=[YOUR_API_KEY]' \
 
 const getUserPreferences = [
 
@@ -54,6 +53,7 @@ const getUserPreferences = [
     name: "Toronto",
     position: Cartesian3.fromDegrees(-79.347015, 43.651070, 100),
     description: "North America",
+    location: "-79.347015%2C43.651070",
     key: 1
      
   },
@@ -62,12 +62,14 @@ const getUserPreferences = [
     name: "Tokyo",
     position: Cartesian3.fromDegrees(139.767052, 35.681167, 100),
     description: "Asia",
+    location: "139.767052%2C35.681167",
     key: 2
   },
   {
     name: "San Francisco",
     position: Cartesian3.fromDegrees(-122.4194, 37.7749, 100),
     description: "North America",
+    location: "-122.4194, 37.7749",
     key: 3
      
   },
@@ -75,6 +77,7 @@ const getUserPreferences = [
     name: "Berlin",
     position: Cartesian3.fromDegrees(13.4050, 52.5200, 100),
     description: "Europe",
+    location: "13.4050, 52.5200",
     key: 4
      
   },
@@ -82,6 +85,7 @@ const getUserPreferences = [
     name: "Delhi",
     position: Cartesian3.fromDegrees(77.1025, 28.7041, 100),
     description: "Asia",
+    location: "77.1025, 28.7041",
     key: 5
      
   },
@@ -89,16 +93,61 @@ const getUserPreferences = [
     name: "Sydney",
     position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
     description: "Australia",
+    location: "151.2093, -33.8688",
+    key: 6
+     
+  },
+  
+  {
+    name: "Panama",
+    position: Cartesian3.fromDegrees(-79.516670, 8.983333, 100),
+    description: "Central America",
+    location: "8.983333, -79.516670",
+    key: 6
+     
+  },
+  {
+    name: "Rio de Janeiro",
+    position: Cartesian3.fromDegrees(-43.196388, -22.908333, 100),
+    description: "South America",
+    location: "-43.196388, -22.908333",
+    key: 6
+     
+  },
+  {
+    name: "Sydney",
+    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
+    description: "Australia",
+    location: "151.2093, -33.8688",
+    key: 6
+     
+  },
+  {
+    name: "Sydney",
+    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
+    description: "Australia",
+    location: "151.2093, -33.8688",
+    key: 6
+     
+  },
+  {
+    name: "Sydney",
+    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
+    description: "Australia",
+    location: "151.2093, -33.8688",
+    key: 6
+     
+  },
+  {
+    name: "Sydney",
+    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
+    description: "Australia",
+    location: "151.2093, -33.8688",
     key: 6
      
   },
 ]
-
-// search?key={your_key_here}&channelId={channel_id_here}&part=snippet,id&order=date&maxResults=20
-// const termFromSearchBar = "?part=snippet&maxResults=5&key=AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A&q=hockey"
   
-
-
 export default hot(function Application() {
   
   const [state, setState] = useState({
@@ -108,9 +157,17 @@ export default hot(function Application() {
     videos: [],
     selectedVideos: null,
     modalShow: false,
-    videoModalShow: false
+    videoModalShow: false,
+    q: "Politics"
 
   });
+
+  const handleQ = (arg) => {
+    const newState = {...state}
+    newState.q = arg
+    setState(prev => ({...prev, ...newState}))
+    console.log(`I worked! and here is my button ${arg} and this is my q state ${state.q}`)
+  }
 
   // Youtube API requests Begin
   
@@ -129,11 +186,11 @@ export default hot(function Application() {
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered={true}
-        backdrop={false}
+       
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            oneWorld Engine
+            oneWorld
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -168,12 +225,13 @@ export default hot(function Application() {
   }
 
 
-  const handleModalShow = () =>  {
+  const handleModalShow = (entity) =>  {
+    
     const newState = {...state}
     newState.modalShow = !state.modalShow
     setState(prev => ({...prev, ...newState}))
-
-    //Likely need to put in handleSearch here
+    console.log(entity.location)
+    fetchVideos(entity.location)
   }
 
   const handleVideoModalShow = () =>  {
@@ -216,15 +274,37 @@ export default hot(function Application() {
       </p>
     );
   }
+  // 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&location=21.5922529%2C-158.1147114&locationRadius=100mi&maxResults=5&q=surfing&type=video&key=[YOUR_API_KEY]' 
+
 
   // Sidebar methods end
-  // https://youtube.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=Ks-_Mh1QhMc&type=video&key=[YOUR_API_KEY]'
+  
   // Youtube API methods begin
+ 
 
   const handleSubmit = async (termFromSearchBar) => {
     const response = await youtube.get('/search', {
         params: {
-            q: termFromSearchBar
+          part: 'snippet',
+          maxResults: 5,
+          key: "AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A",
+          q: termFromSearchBar
+        }
+    })
+    setState(prev => ({...prev,  videos: response.data.items})) 
+  };
+
+  const fetchVideos = async (location) => {
+    const q = state.q
+    const response = await youtube.get('/search', {
+        params: {
+          part: 'snippet',
+          location,
+          locationRadius: "150mi",
+          maxResult: 5,
+          q,
+          type: "video",
+          key: "AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A"
         }
     })
     setState(prev => ({...prev,  videos: response.data.items})) 
@@ -242,22 +322,21 @@ export default hot(function Application() {
    
   const userPreferences = getUserPreferences.map((entity) => {
     return ( 
-      <Entity onClick={() => handleModalShow()} key={entity.key} position={entity.position} name={entity.name} description={entity.description} point={{ pixelSize: 15, color: Color.ORANGE }} >
-        <PlaylistModal
-        show={state.modalShow} 
-        onHide={handleModalShow}
-      />
-      <VideoModal
-        show={state.videoModalShow} 
-        onHide={handleVideoModalShow}
-      />
+      <Entity 
+        onClick={() => handleModalShow(entity)} 
+        key={entity.key} 
+        position={entity.position} 
+        name={entity.name} 
+        description={entity.description} 
+        api={entity.api}
+        point={{ pixelSize: 15, color: Color.ORANGE }} >
       </Entity>
     )
   }) 
 
   //Entity Builder end
 
-  const sidebar = <SidebarContent />;
+  const sidebar = <SidebarContent handleQ={handleQ}/>;
 
   const contentHeader = (
     <span className='span-head'>
@@ -276,21 +355,20 @@ export default hot(function Application() {
     sidebarClassName: "custom-sidebar-class",
     contentId: "custom-sidebar-content-id",
     open: state.open,
-    onSetOpen
+    onSetOpen,
+  
   };
 
 
 
     return (
-      <main>
+      <div>
        
-        <nav>
+        <main>
             <Sidebar {...sidebarProps}>
               <MaterialTitlePanel title={contentHeader}>
                 <div style={styles.content}>
                   <Viewer infobox={true} fullscreenButton={true} terrainProvider={terrainProvider} >
-                    
-                  
                   <Globe enableLighting />
                   <Clock
                       startTime={JulianDate.fromIso8601("2020-02-20")}
@@ -303,43 +381,22 @@ export default hot(function Application() {
                     />
                   
                     <CustomDataSource >
-                    { userPreferences }
-           
+                      { userPreferences }
+                      <PlaylistModal show={state.modalShow} onHide={handleModalShow}/>
+                      <VideoModal show={state.videoModalShow} onHide={handleVideoModalShow}/>
                     </CustomDataSource>
                   </Viewer>
                 </div>
               </MaterialTitlePanel>
             </Sidebar>
-        </nav>
-      <footer>
-                  {/* <div className="eleven wide column">
-                    <VideoDetail video={state.selectedVideo}/>
-                </div>  */}
-      
-      </footer>
-      </main>
+        </main>
+    
+      </div>
     );
   }
 )
 
-/* <main>
-<nav>
-    <Sidebar {...sidebarProps}>
-      
-    </Sidebar>
-</nav>
-        <MaterialTitlePanel title={contentHeader}>
-        <div style={styles.content}>
-        <Viewer terrainProvider={terrainProvider}>
-                  {this.userPreferences}
-                </Viewer>
-        </div>
-      </MaterialTitlePanel>
-</main> */
 
-// export default hot(Application)
-
-// ReactDOM.render(<Application />, document.getElementById("root"));
 
 
 
