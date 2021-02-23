@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import MaterialTitlePanel from "./MaterialTitlePanel";
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import { sampleTerrainMostDetailed } from "cesium";
+// import { Cartesian3, CameraFlyTo } from "cesium";
+// // import { Viewer, Entity, CustomDataSource, Globe, Clock } from "resium";
 
 
 const styles = {
@@ -39,10 +39,22 @@ const SidebarContent = props => {
    
   const links = [];
 
+  const handleRemove = (arg) => {
+    // console.log(`fire with this ${arg}`)
+    const iRemove = topics.indexOf(arg)
+    const newTopics = [...topics]
+    newTopics.splice(iRemove, 1)
+    setTopics([...newTopics])
+  }
+
+
   for (let ind = 0; ind < topics.length; ind++) {
     links.push(
       <a key={ind} href="#" onClick={() => props.handleQ(topics[ind])} style={styles.sidebarLink}>
         {topics[ind]}
+        <button onClick={() => handleRemove(topics[ind])} type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
       </a>
     );
   }
@@ -61,14 +73,17 @@ const SidebarContent = props => {
   // const closeModal = (evt)
 
   return (
-    <MaterialTitlePanel title="Menu" style={style}>
+    <MaterialTitlePanel title="Welcome: UserName" style={style}>
       <div style={styles.content}>
         <a href="#" style={styles.sidebarLink}>
           Logout
         </a>
+        <a onClick={() => props.showFort()} style={styles.sidebarLink}>
+          Favourites
+        </a>
         <div style={styles.divider} />
         {links}
-        <a onClick={openModal} style={styles.sidebarLink}>
+        <a onClick={openModal}  className={"btn btn-primary"}>
           Add Custom Preference
         </a>
       </div>

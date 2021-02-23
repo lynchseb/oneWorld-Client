@@ -55,8 +55,10 @@ export default hot(function Application() {
     selectedVideos: null,
     modalShow: false,
     videoModalShow: false,
-    q: "Politics",
-    location: ""
+    fortressModalShow: false,
+    q: "Comedy",
+    location: "",
+    favourites: [],
   
   });
   
@@ -66,7 +68,23 @@ export default hot(function Application() {
     const newState = {...state}
     newState.q = arg
     setState(prev => ({...prev, ...newState}))
-    console.log(`I worked! and here is my button ${arg} and this is my q state ${state.q}`)
+    // console.log(`I worked! and here is my button ${arg} and this is my q state ${state.q}`)
+  }
+
+  const handleRemove = (arg) => {
+    console.log(`fire with this ${arg}`)
+    const newState ={...state}
+    newState.q.slice(arg)
+    setState(prev => ({...prev, ...newState}))
+  }
+
+  const handleFavourite = (favourite) => {
+  
+    state.favourites.push(favourite)
+    // console.log(state.videos)
+    // console.log(favourite)
+    // axios.post('http://localhost:3001/favourites')
+
   }
 
   // Youtube API requests Begin
@@ -86,7 +104,7 @@ export default hot(function Application() {
        arr.push(cartMark)
      })
      setUserPreferences(arr)
-     console.log(arr)
+    //  console.log(arr)
    })
    .catch(e => {
      console.log(e)
@@ -136,8 +154,35 @@ export default hot(function Application() {
         <Modal.Body>
            <div className="eleven wide column">
                <VideoDetail video={state.selectedVideo}/>
-            </div>    
+            </div>   
+            
         </Modal.Body>
+        <Button variant={"primary"} size={"lg"} block onClick={() => handleFavourite(state.selectedVideo)}> Favourite </Button>
+      </Modal>
+    );
+  }
+
+  function FortressModal(props) {
+    return (
+      <Modal {...props} size="lg" aria-labelledby="contained-modal-title-vcenter">
+        <Modal.Body>
+        <div className='ui container' style={{marginBottom: '1em'}}>
+            <div className='ui grid'>
+              <div className="ui row">
+                 <div className="five wide column">
+                   <VideoList handleVideoSelect={handleVideoSelect} videos={state.favourites}/>
+                  </div>
+                </div>
+            </div>
+          </div>   
+           <div className="eleven wide column">
+               <VideoDetail video={state.selectedVideo}/>
+            </div>   
+            
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={props.onHide}>Close</Button>
+        </Modal.Footer>
       </Modal>
     );
   }
@@ -162,11 +207,23 @@ export default hot(function Application() {
     const newState = {...state}
     newState.videoModalShow = true
     newState.modalShow = false
+    newState.fortressModalShow = false
     setState(prev => ({...prev, ...newState}))
   }
 
   const handleCloseVideoModal = () => {
     setState(prev => ({...prev, videoModalShow: false }))
+  }
+
+  const handleFortressModalShow = () => {
+    const newState = {...state}
+    newState.fortressModalShow = true
+    newState.modalShow = false
+    setState(prev => ({...prev, ...newState}))
+  }
+
+  const handleFortressModalClose = () => {
+    setState(prev => ({...prev, fortressModalShow: false}))
   }
 
 
@@ -219,7 +276,7 @@ export default hot(function Application() {
           locationRadius: "50mi",
           maxResults: 10,
           type: "video",
-          key: 3,
+          key: "",
           q: termFromSearchBar
         }
     })
@@ -236,14 +293,14 @@ export default hot(function Application() {
           maxResult: 10,
           q,
           type: "video",
-          key: 3
+          key: "",
         }
     })
     setState(prev => ({...prev,  videos: response.data.items})) 
   };
 
     const handleVideoSelect = (video) => {
-    // handleModalShow()
+   
     handleVideoModalShow()
     setState(prev => ({...prev, selectedVideo: video}))
   }
@@ -268,7 +325,7 @@ export default hot(function Application() {
 
   //Entity Builder end
 
-  const sidebar = <SidebarContent handleQ={handleQ}/>;
+  const sidebar = <SidebarContent handleQ={handleQ} handleRemove={handleRemove} showFort={handleFortressModalShow}/>;
 
   const contentHeader = (
     <span className='span-head'>
@@ -276,7 +333,7 @@ export default hot(function Application() {
           = oneWorld
         </a> 
         
-        <span>{`Now viewing:    ${state.q}`}</span>
+        <span>{`Now searching: ${state.q}`}</span>
     
         <span> {renderPropCheckbox()} </span>
     </span>
@@ -299,7 +356,7 @@ export default hot(function Application() {
        
         <main>
             <Sidebar {...sidebarProps}>
-              <MaterialTitlePanel title={contentHeader}>
+              <MaterialTitlePanel title={contentHeader} >
                 <div style={styles.content}>
                   <Viewer infobox={true} fullscreenButton={true} terrainProvider={terrainProvider} >
                   <Globe enableLighting />
@@ -317,6 +374,7 @@ export default hot(function Application() {
                       { userPreferences }
                       <PlaylistModal show={state.modalShow} onHide={handleCloseModal}/>
                       <VideoModal show={state.videoModalShow} onHide={handleCloseVideoModal}/>
+                      <FortressModal show={state.fortressModalShow} onHide={handleFortressModalClose}/>
                     </CustomDataSource>
                   </Viewer>
                 </div>
