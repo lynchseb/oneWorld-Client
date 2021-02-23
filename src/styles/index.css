@@ -13,7 +13,3 @@ code {
     monospace;
 }
 
-.span-head {
-  display: flex;
-  justify-content: space-between;
-}

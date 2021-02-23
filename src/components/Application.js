@@ -1,6 +1,7 @@
 
 // Dependency Imports
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 // import ReactDOM from "react-dom";
 import Sidebar from "react-sidebar";
 
@@ -44,110 +45,6 @@ const styles = {
 const terrainProvider = createWorldTerrain();
 
 
-
-// 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&location=21.5922529%2C-158.1147114&locationRadius=10mi&q=surfing&type=video&key=[YOUR_API_KEY]' \
-
-const getUserPreferences = [
-
-  {
-    name: "Toronto",
-    position: Cartesian3.fromDegrees(-79.347015, 43.651070, 100),
-    description: "North America",
-    location: "-79.347015%2C43.651070",
-    key: 1
-     
-  },
-
-  {
-    name: "Tokyo",
-    position: Cartesian3.fromDegrees(139.767052, 35.681167, 100),
-    description: "Asia",
-    location: "139.767052%2C35.681167",
-    key: 2
-  },
-  {
-    name: "San Francisco",
-    position: Cartesian3.fromDegrees(-122.4194, 37.7749, 100),
-    description: "North America",
-    location: "-122.4194, 37.7749",
-    key: 3
-     
-  },
-  {
-    name: "Berlin",
-    position: Cartesian3.fromDegrees(13.4050, 52.5200, 100),
-    description: "Europe",
-    location: "13.4050, 52.5200",
-    key: 4
-     
-  },
-  {
-    name: "Delhi",
-    position: Cartesian3.fromDegrees(77.1025, 28.7041, 100),
-    description: "Asia",
-    location: "77.1025, 28.7041",
-    key: 5
-     
-  },
-  {
-    name: "Sydney",
-    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
-    description: "Australia",
-    location: "151.2093, -33.8688",
-    key: 6
-     
-  },
-  
-  {
-    name: "Panama",
-    position: Cartesian3.fromDegrees(-79.516670, 8.983333, 100),
-    description: "Central America",
-    location: "8.983333, -79.516670",
-    key: 6
-     
-  },
-  {
-    name: "Rio de Janeiro",
-    position: Cartesian3.fromDegrees(-43.196388, -22.908333, 100),
-    description: "South America",
-    location: "-43.196388, -22.908333",
-    key: 6
-     
-  },
-  {
-    name: "Sydney",
-    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
-    description: "Australia",
-    location: "151.2093, -33.8688",
-    key: 6
-     
-  },
-  {
-    name: "Sydney",
-    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
-    description: "Australia",
-    location: "151.2093, -33.8688",
-    key: 6
-     
-  },
-  {
-    name: "Sydney",
-    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
-    description: "Australia",
-    location: "151.2093, -33.8688",
-    key: 6
-     
-  },
-  {
-    name: "Sydney",
-    position: Cartesian3.fromDegrees(151.2093, -33.8688, 100),
-    description: "Australia",
-    location: "151.2093, -33.8688",
-    key: 6
-     
-  },
-]
-  
 export default hot(function Application() {
   
   const [state, setState] = useState({
@@ -158,9 +55,12 @@ export default hot(function Application() {
     selectedVideos: null,
     modalShow: false,
     videoModalShow: false,
-    q: "Politics"
-
+    q: "Politics",
+    location: ""
+  
   });
+  
+  const [getUserPreferences, setUserPreferences] = useState([])
 
   const handleQ = (arg) => {
     const newState = {...state}
@@ -170,10 +70,28 @@ export default hot(function Application() {
   }
 
   // Youtube API requests Begin
-  
-  // useEffect(() => {
-  //   handleSubmit()
-  // })
+ 
+  useEffect(() => {
+   axios.get('http://localhost:3001/markers')
+   .then(res => {
+     const arr = []
+     res.data.markers.forEach((marker) => {
+       const lat = parseFloat(marker.lat)
+       const lng = parseFloat(marker.lng)
+       const cartMark = {
+         ...marker,
+        
+        position: Cartesian3.fromDegrees(lat, lng, 100)
+       }
+       arr.push(cartMark)
+     })
+     setUserPreferences(arr)
+     console.log(arr)
+   })
+   .catch(e => {
+     console.log(e)
+   })
+  }, [])
 
   // Youtube API requests End
 
@@ -225,20 +143,32 @@ export default hot(function Application() {
   }
 
 
-  const handleModalShow = (entity) =>  {
+  const handleModalShow = (location) =>  {
     
     const newState = {...state}
-    newState.modalShow = !state.modalShow
+    newState.modalShow = true
+    newState.location = location
     setState(prev => ({...prev, ...newState}))
-    console.log(entity.location)
-    fetchVideos(entity.location)
+    // console.log(entity.location)
+    fetchVideos(location)
+    // console.log(`current location is ${state.location}`)
+  }
+
+  const handleCloseModal = () => {
+  setState(prev => ({...prev, modalShow: false}))
   }
 
   const handleVideoModalShow = () =>  {
     const newState = {...state}
-    newState.videoModalShow = !state.videoModalShow
+    newState.videoModalShow = true
+    newState.modalShow = false
     setState(prev => ({...prev, ...newState}))
   }
+
+  const handleCloseVideoModal = () => {
+    setState(prev => ({...prev, videoModalShow: false }))
+  }
+
 
   // Playlist and Video Modal methods end
 
@@ -274,8 +204,6 @@ export default hot(function Application() {
       </p>
     );
   }
-  // 'https://youtube.googleapis.com/youtube/v3/search?part=snippet&location=21.5922529%2C-158.1147114&locationRadius=100mi&maxResults=5&q=surfing&type=video&key=[YOUR_API_KEY]' 
-
 
   // Sidebar methods end
   
@@ -283,11 +211,15 @@ export default hot(function Application() {
  
 
   const handleSubmit = async (termFromSearchBar) => {
+    const location = state.location
     const response = await youtube.get('/search', {
         params: {
           part: 'snippet',
-          maxResults: 5,
-          key: "",
+          location,
+          locationRadius: "50mi",
+          maxResults: 10,
+          type: "video",
+          key: "AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A",
           q: termFromSearchBar
         }
     })
@@ -300,18 +232,18 @@ export default hot(function Application() {
         params: {
           part: 'snippet',
           location,
-          locationRadius: "150mi",
-          maxResult: 5,
+          locationRadius: "50mi",
+          maxResult: 10,
           q,
           type: "video",
-          key: ""
+          key: "AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A"
         }
     })
     setState(prev => ({...prev,  videos: response.data.items})) 
   };
 
     const handleVideoSelect = (video) => {
-    handleModalShow()
+    // handleModalShow()
     handleVideoModalShow()
     setState(prev => ({...prev, selectedVideo: video}))
   }
@@ -323,8 +255,8 @@ export default hot(function Application() {
   const userPreferences = getUserPreferences.map((entity) => {
     return ( 
       <Entity 
-        onClick={() => handleModalShow(entity)} 
-        key={entity.key} 
+        onClick={() => handleModalShow(entity.location)} 
+        key={entity.id} 
         position={entity.position} 
         name={entity.name} 
         description={entity.description} 
@@ -340,12 +272,13 @@ export default hot(function Application() {
 
   const contentHeader = (
     <span className='span-head'>
-      
-        <a onClick={menuButtonClick} href="#" style={styles.contentHeaderMenuLink}>
-          =
-        </a> oneWorld
-      {renderPropCheckbox()}
-      
+         <a onClick={menuButtonClick} href="#" style={styles.contentHeaderMenuLink}>
+          = oneWorld
+        </a> 
+        
+        <span>{`Now viewing:    ${state.q}`}</span>
+    
+        <span> {renderPropCheckbox()} </span>
     </span>
   );
 
@@ -382,8 +315,8 @@ export default hot(function Application() {
                   
                     <CustomDataSource >
                       { userPreferences }
-                      <PlaylistModal show={state.modalShow} onHide={handleModalShow}/>
-                      <VideoModal show={state.videoModalShow} onHide={handleVideoModalShow}/>
+                      <PlaylistModal show={state.modalShow} onHide={handleCloseModal}/>
+                      <VideoModal show={state.videoModalShow} onHide={handleCloseVideoModal}/>
                     </CustomDataSource>
                   </Viewer>
                 </div>
