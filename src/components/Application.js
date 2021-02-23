@@ -219,7 +219,7 @@ export default hot(function Application() {
           locationRadius: "50mi",
           maxResults: 10,
           type: "video",
-          key: "AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A",
+          key: 3,
           q: termFromSearchBar
         }
     })
@@ -236,7 +236,7 @@ export default hot(function Application() {
           maxResult: 10,
           q,
           type: "video",
-          key: "AIzaSyCuPWQiKkYwa8pbCPmdmCJJVm53jMAsQ0A"
+          key: 3
         }
     })
     setState(prev => ({...prev,  videos: response.data.items})) 
