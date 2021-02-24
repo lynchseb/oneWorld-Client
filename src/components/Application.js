@@ -71,16 +71,12 @@ export default hot(function Application() {
     // console.log(`I worked! and here is my button ${arg} and this is my q state ${state.q}`)
   }
 
-  const handleRemove = (arg) => {
-    console.log(`fire with this ${arg}`)
-    const newState ={...state}
-    newState.q.slice(arg)
-    setState(prev => ({...prev, ...newState}))
-  }
-
-  const handleFavourite = (favourite) => {
   
-    state.favourites.push(favourite)
+  const handleFavourite = (favourite) => {
+    if(!state.favourites.includes(favourite)){
+      state.favourites.push(favourite)
+
+    }
     // console.log(state.videos)
     // console.log(favourite)
     // axios.post('http://localhost:3001/favourites')
@@ -293,7 +289,7 @@ export default hot(function Application() {
           maxResult: 10,
           q,
           type: "video",
-          key: "",
+          key: "AIzaSyArdXMuZ88jrCHPV9kzmmPiAwe0e0T6YLQ",
         }
     })
     setState(prev => ({...prev,  videos: response.data.items})) 
@@ -325,7 +321,7 @@ export default hot(function Application() {
 
   //Entity Builder end
 
-  const sidebar = <SidebarContent handleQ={handleQ} handleRemove={handleRemove} showFort={handleFortressModalShow}/>;
+  const sidebar = <SidebarContent handleQ={handleQ} showFort={handleFortressModalShow}/>;
 
   const contentHeader = (
     <span className='span-head'>

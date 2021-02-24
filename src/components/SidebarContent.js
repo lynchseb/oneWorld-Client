@@ -30,7 +30,7 @@ const styles = {
 };
 
 const SidebarContent = props => {
- const [topics, setTopics] = useState(["Politics", "World Events", "Comedy", "Movies", "Sport", "Art", "Science", "Nature", "Environment", "Agriculture", "Food", "Fashion", "Local Wonders", "Local News"])
+ const [topics, setTopics] = useState(["Politics", "World Events", "Comedy", "Movies", "Sport", "Art", "Science", "Nature", "Environment", "Cooking", "Fashion", "Local Wonders", "Local News"])
  const [modal, setModal] = useState(false)
 
   const style = props.style
