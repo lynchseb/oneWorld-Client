@@ -289,7 +289,7 @@ export default hot(function Application() {
           maxResult: 10,
           q,
           type: "video",
-          key: "AIzaSyArdXMuZ88jrCHPV9kzmmPiAwe0e0T6YLQ",
+          key: "",
         }
     })
     setState(prev => ({...prev,  videos: response.data.items})) 
@@ -357,8 +357,8 @@ export default hot(function Application() {
                   <Viewer infobox={true} fullscreenButton={true} terrainProvider={terrainProvider} >
                   <Globe enableLighting />
                   <Clock
-                      startTime={JulianDate.fromIso8601("2020-02-20")}
-                      currentTime={JulianDate.fromIso8601("2021-02-20")}
+                      startTime={JulianDate.fromIso8601("2020-02-25")}
+                      currentTime={JulianDate.fromIso8601("2021-02-25")}
                       stopTime={JulianDate.fromIso8601("2030-01-01")}
                       clockRange={ClockRange.LOOP_STOP} 
                       clockStep={ClockStep.SYSTEM_CLOCK_MULTIPLIER}
